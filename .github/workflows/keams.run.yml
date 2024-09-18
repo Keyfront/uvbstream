@@ -20,13 +20,16 @@ jobs:
           node-version: '18'
 
       - name: Install dependencies
+        working-directory: ./bot
         run: npm install
 
       - name: Run the bot
+        working-directory: ./bot
         run: |
           nohup node index.js &
           
       - name: Restart bot
+        working-directory: ./bot
         run: |
           pkill -f 'node index.js' || true
           nohup node index.js &
