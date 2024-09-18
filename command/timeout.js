@@ -1,6 +1,6 @@
 module.exports = {
   data: {
-    name: 'pjs?timeout',
+    name: 'mute',
   },
   async execute(message, args) {
     if (!message.member.permissions.has('MODERATE_MEMBERS')) return message.reply('You do not have permission to timeout members.');
