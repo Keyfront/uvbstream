@@ -2,7 +2,7 @@ const { PermissionFlagsBits } = require('discord.js');
 
 module.exports = {
   data: {
-    name: 'pjs?lock',
+    name: 'lock',
   },
   async execute(message) {
     const channel = message.channel;
