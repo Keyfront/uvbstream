@@ -2,12 +2,11 @@ name: Discord Bot Workflow
 
 on:
   schedule:
-    # Déclenche le workflow toutes les 6 heures et 1 minute
-    - cron: '1 */6 * * *'
+    - cron: '1 */6 * * *'  # Toutes les 6 heures et 1 minute
   workflow_dispatch:
 
 jobs:
-  build-and-restart:
+  bot-job:
     runs-on: ubuntu-latest
 
     steps:
@@ -20,16 +19,15 @@ jobs:
           node-version: '18'
 
       - name: Install dependencies
-        run: |
-          npm install discord.js dotenv
+        run: npm install
+
+      - name: Compile project (if needed)
+        run: npm run build
+        # Remplace cette commande par la commande spécifique à ton projet si tu n'utilises pas TypeScript ou un autre outil de prétraitement.
 
       - name: Run the bot
         run: |
-          nohup node index.js &
-          
-      - name: Restart bot
-        run: |
           pkill -f 'node index.js' || true
-          nohup node index.js &
+          nohup node index.js > bot.log 2>&1 &
         env:
           DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
