@@ -1,6 +1,6 @@
 module.exports = {
   data: {
-    name: 'pjs?unlock',
+    name: 'unlock',
   },
   async execute(message) {
     const channel = message.channel;
