@@ -1,8 +1,14 @@
 module.exports = {
-  data: {
-    name: 'pjs?welcome',
-  },
-  async execute(message) {
-    // This file handles welcome messages and does not need to be triggered by command
+  name: 'guildMemberAdd', // Nom de l'événement
+  execute(member) {
+    // Recherche des salons contenant les mots "general" ou "chat"
+    const welcomeChannel = member.guild.channels.cache.find(ch => 
+      ch.name.toLowerCase().includes('general') || 
+      ch.name.toLowerCase().includes('chat')
+    );
+
+    if (welcomeChannel) {
+      welcomeChannel.send(`Welcome to the server, ${member}!`);
+    }
   },
 };
