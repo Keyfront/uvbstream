@@ -1,0 +1,34 @@
+name: Discord Bot Workflow
+
+on:
+  schedule:
+    # Déclenche le workflow toutes les 6 heures et 1 minute
+    - cron: '1 */6 * * *'
+  workflow_dispatch:
+
+jobs:
+  build-and-restart:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run the bot
+        run: |
+          nohup node index.js &
+          
+      - name: Restart bot
+        run: |
+          pkill -f 'node index.js' || true
+          nohup node index.js &
+        env:
+          DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
