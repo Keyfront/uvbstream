@@ -1,3 +1,4 @@
+// command/ban.js
 module.exports = {
   data: {
     name: 'ban',
