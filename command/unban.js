@@ -1,6 +1,6 @@
 module.exports = {
   data: {
-    name: 'pjs?unban',
+    name: 'unban',
   },
   async execute(message, args) {
     if (!message.member.permissions.has('BAN_MEMBERS')) return message.reply('You do not have permission to unban members.');
