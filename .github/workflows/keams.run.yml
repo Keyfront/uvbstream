@@ -27,5 +27,6 @@ jobs:
     - name: Run Discord Bot (with 30 minute timeout)
       env:
         DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
+        PREFIX: ${{ secrets.PREFIX }}
       run: |
         node index.js
