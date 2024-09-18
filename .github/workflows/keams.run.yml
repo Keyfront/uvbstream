@@ -25,9 +25,16 @@ jobs:
         run: npm run build
         # Remplace cette commande par la commande spécifique à ton projet si tu n'utilises pas TypeScript ou un autre outil de prétraitement.
 
-      - name: Run the bot
+      - name: Stop any running instance of the bot
         run: |
           pkill -f 'node index.js' || true
+        continue-on-error: true
+
+      - name: Run the bot
+        run: |
           nohup node index.js > bot.log 2>&1 &
         env:
           DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
+
+      - name: Check bot logs
+        run: tail -n 20 bot.log
