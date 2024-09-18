@@ -1,6 +1,6 @@
 module.exports = {
   data: {
-    name: 'pjs?kick',
+    name: 'kick',
   },
   async execute(message, args) {
     if (!message.member.permissions.has('KICK_MEMBERS')) return message.reply('You do not have permission to kick members.');
