@@ -15,9 +15,11 @@ client.commands = new Collection();
 // Change le chemin d'accès aux fichiers de commandes
 const commandFiles = fs.readdirSync('./command').filter(file => file.endsWith('.js'));
 
+console.log('Chargement des commandes...');
 for (const file of commandFiles) {
   const command = require(`./command/${file}`);
   client.commands.set(command.data.name, command);
+  console.log(`Commande chargée : ${command.data.name}`); // Debugging
 }
 
 client.once('ready', () => {
@@ -25,13 +27,14 @@ client.once('ready', () => {
 });
 
 client.on('messageCreate', message => {
-  // Vérifie si le message commence par le préfixe et n'est pas envoyé par un bot
   if (!message.content.startsWith(process.env.PREFIX) || message.author.bot) return;
 
-  console.log(`Message reçu avec préfixe : ${process.env.PREFIX}`); // Debugging
+  console.log(`Message reçu : ${message.content}`); // Debugging
 
   const args = message.content.slice(process.env.PREFIX.length).trim().split(/ +/);
   const command = args.shift().toLowerCase();
+
+  console.log(`Commande traitée : ${command}`); // Debugging
 
   if (client.commands.has(command)) {
     try {
@@ -46,7 +49,6 @@ client.on('messageCreate', message => {
 });
 
 client.on('guildMemberAdd', member => {
-  // Recherche des salons contenant les mots "general" ou "chat"
   const welcomeChannel = member.guild.channels.cache.find(ch => 
     ch.name.toLowerCase().includes('general') || 
     ch.name.toLowerCase().includes('chat')
