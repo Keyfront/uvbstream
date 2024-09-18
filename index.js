@@ -12,7 +12,7 @@ const client = new Client({
 });
 client.commands = new Collection();
 
-// Change le chemin d'accès aux fichiers de commandes
+// Charge les fichiers de commandes
 const commandFiles = fs.readdirSync('./command').filter(file => file.endsWith('.js'));
 
 console.log('Chargement des commandes...');
@@ -20,6 +20,16 @@ for (const file of commandFiles) {
   const command = require(`./command/${file}`);
   client.commands.set(command.data.name, command);
   console.log(`Commande chargée : ${command.data.name}`); // Debugging
+}
+
+// Charge les fichiers d'événements
+const eventFiles = fs.readdirSync('./events').filter(file => file.endsWith('.js'));
+
+console.log('Chargement des événements...');
+for (const file of eventFiles) {
+  const event = require(`./events/${file}`);
+  client.on(event.name, (...args) => event.execute(...args));
+  console.log(`Événement chargé : ${event.name}`); // Debugging
 }
 
 client.once('ready', () => {
@@ -45,17 +55,6 @@ client.on('messageCreate', message => {
     }
   } else {
     message.reply('Command not found!');
-  }
-});
-
-client.on('guildMemberAdd', member => {
-  const welcomeChannel = member.guild.channels.cache.find(ch => 
-    ch.name.toLowerCase().includes('general') || 
-    ch.name.toLowerCase().includes('chat')
-  );
-
-  if (welcomeChannel) {
-    welcomeChannel.send(`Welcome to the server, ${member}!`);
   }
 });
 
