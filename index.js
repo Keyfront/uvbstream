@@ -2,13 +2,21 @@ const { Client, GatewayIntentBits, Collection } = require('discord.js');
 const fs = require('fs');
 require('dotenv').config();
 
-const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMembers] });
+const client = new Client({ 
+  intents: [ 
+    GatewayIntentBits.Guilds, 
+    GatewayIntentBits.GuildMessages, 
+    GatewayIntentBits.MessageContent, 
+    GatewayIntentBits.GuildMembers 
+  ] 
+});
 client.commands = new Collection();
 
-const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
+// Change le chemin d'accès aux fichiers de commandes
+const commandFiles = fs.readdirSync('/').filter(file => file.endsWith('.js'));
 
 for (const file of commandFiles) {
-  const command = require(`./commands/${file}`);
+  const command = require(`/${file}`);
   client.commands.set(command.data.name, command);
 }
 
@@ -33,7 +41,12 @@ client.on('messageCreate', message => {
 });
 
 client.on('guildMemberAdd', member => {
-  const welcomeChannel = member.guild.channels.cache.find(ch => ch.name === 'general' || ch.name === 'chat');
+  // Recherche des salons contenant les mots "general" ou "chat"
+  const welcomeChannel = member.guild.channels.cache.find(ch => 
+    ch.name.toLowerCase().includes('general') || 
+    ch.name.toLowerCase().includes('chat')
+  );
+
   if (welcomeChannel) {
     welcomeChannel.send(`Welcome to the server, ${member}!`);
   }
