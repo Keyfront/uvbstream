@@ -13,7 +13,7 @@ const client = new Client({
 client.commands = new Collection();
 
 // Change le chemin d'accès aux fichiers de commandes
-const commandFiles = fs.readdirSync('./command/').filter(file => file.endsWith('.js'));
+const commandFiles = fs.readdirSync('./command').filter(file => file.endsWith('.js'));
 
 for (const file of commandFiles) {
   const command = require(`./command/${file}`);
