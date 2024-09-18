@@ -25,7 +25,10 @@ client.once('ready', () => {
 });
 
 client.on('messageCreate', message => {
+  // Vérifie si le message commence par le préfixe et n'est pas envoyé par un bot
   if (!message.content.startsWith(process.env.PREFIX) || message.author.bot) return;
+
+  console.log(`Message reçu avec préfixe : ${process.env.PREFIX}`); // Debugging
 
   const args = message.content.slice(process.env.PREFIX.length).trim().split(/ +/);
   const command = args.shift().toLowerCase();
@@ -37,6 +40,8 @@ client.on('messageCreate', message => {
       console.error(error);
       message.reply('There was an error executing that command!');
     }
+  } else {
+    message.reply('Command not found!');
   }
 });
 
