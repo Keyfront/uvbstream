@@ -21,7 +21,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          npm install discord.js
+          npm install discord.js dotenv
 
       - name: Run the bot
         run: |
