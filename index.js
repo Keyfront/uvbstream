@@ -13,7 +13,7 @@ const { spawn } = require('child_process');
   await page.setViewport({ width: 1920, height: 1080 });
   
   // Charger la page web que tu veux streamer
-  await page.goto('https://example.com', { waitUntil: 'networkidle2' });
+  await page.goto('http://discode-studio.github.io/shortwave.bot/4625waterfall.html', { waitUntil: 'networkidle2' });
   
   // Capture vidéo de la page
   const ffmpeg = spawn('ffmpeg', [
@@ -25,7 +25,7 @@ const { spawn } = require('child_process');
     '-pix_fmt', 'yuv420p',      // Format vidéo
     '-preset', 'fast',          // Optimisation de la vitesse d'encodage
     '-f', 'flv',                // Format de sortie (RTMP/FLV)
-    'rtmp://a.rtmp.youtube.com/live2/YOUR_STREAM_KEY'  // URL RTMP de sortie
+    'rtmp://a.rtmp.youtube.com/live2/sz87-dusv-psay-wsra-5xms'  // URL RTMP de sortie
   ]);
 
   // Stream la capture de la page vers ffmpeg
