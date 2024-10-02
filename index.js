@@ -24,8 +24,8 @@ const { spawn } = require('child_process');
     '-vf', 'scale=1920:1080',
     '-c:v', 'libx264',  // Utilisation de libx264 pour encoder la vidéo
     '-preset', 'fast',  // Réglage pour l'encodage rapide
-    '-b:v', '3000k',
-    '-maxrate', '3000k',
+    '-b:v', '4500k',
+    '-maxrate', '5000k',
     '-bufsize', '6000k',
     '-pix_fmt', 'yuv420p',
     '-g', '50',
