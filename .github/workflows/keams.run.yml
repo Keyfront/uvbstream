@@ -24,8 +24,9 @@ jobs:
         npm install discord.js
         npm install dotenv
         npm install puppeteer
-        sudo apt-get install ffmpeg
-        
+        sudo apt update
+        sudo apt install ffmpeg libavcodec-extra
+
     - name: Run Discord Bot (with 30 minute timeout)
       env:
         DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
