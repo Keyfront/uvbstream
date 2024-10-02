@@ -17,16 +17,16 @@ const { spawn } = require('child_process');
   
   // Capture vidéo de la page
   const ffmpeg = spawn('ffmpeg', [
-    '-y',                      // Écraser les fichiers existants
-    '-f', 'image2pipe',         // Lire depuis un pipe d'images
-    '-r', '30',                 // Taux de rafraîchissement
-    '-i', '-',                  // Utilise stdin comme source d'entrée
-    '-c:v', 'libx264',          // Codec vidéo
-    '-pix_fmt', 'yuv420p',      // Format vidéo
-    '-preset', 'fast',          // Optimisation de la vitesse d'encodage
-    '-f', 'flv',                // Format de sortie (RTMP/FLV)
-    'rtmp://a.rtmp.youtube.com/live2/sz87-dusv-psay-wsra-5xms'  // URL RTMP de sortie
-  ]);
+  '-y',
+  '-f', 'image2pipe',
+  '-r', '30',
+  '-i', '-',
+  '-c:v', 'libx264',
+  '-pix_fmt', 'yuv420p',
+  '-preset', 'fast',
+  '-f', 'flv',
+  `rtmp://a.rtmp.youtube.com/live2/${process.env.YOUTUBE_STREAM_KEY}`  // Utiliser la clé RTMP depuis les secrets GitHub
+]);
 
   // Stream la capture de la page vers ffmpeg
   const streamVideo = async () => {
