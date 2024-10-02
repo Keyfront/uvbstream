@@ -30,7 +30,7 @@ const { spawn } = require('child_process');
     '-pix_fmt', 'yuv420p',
     '-g', '50',
     '-f', 'flv',
-    'rtmp://a.rtmp.youtube.com/live2/sz87-dusv-psay-wsra-5xms'  // Utiliser la clé RTMP depuis les secrets GitHub
+    'rtmp://a.rtmp.youtube.com:443/live2/sz87-dusv-psay-wsra-5xms'  // Utiliser la clé RTMP depuis les secrets GitHub
 ]);
 
   // Stream la capture de la page vers ffmpeg
