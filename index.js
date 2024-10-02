@@ -1,60 +1,50 @@
-const { Client, GatewayIntentBits, Collection } = require('discord.js');
-const fs = require('fs');
-require('dotenv').config();
+const puppeteer = require('puppeteer');
+const { spawn } = require('child_process');
 
-const client = new Client({ 
-  intents: [ 
-    GatewayIntentBits.Guilds, 
-    GatewayIntentBits.GuildMessages, 
-    GatewayIntentBits.MessageContent, 
-    GatewayIntentBits.GuildMembers 
-  ] 
-});
-client.commands = new Collection();
+(async () => {
+  const browser = await puppeteer.launch({
+    headless: true,  // Lancer sans interface graphique
+    args: ['--no-sandbox', '--disable-setuid-sandbox']
+  });
+  
+  const page = await browser.newPage();
+  
+  // Définir la résolution de capture (par exemple 1920x1080)
+  await page.setViewport({ width: 1920, height: 1080 });
+  
+  // Charger la page web que tu veux streamer
+  await page.goto('https://example.com', { waitUntil: 'networkidle2' });
+  
+  // Capture vidéo de la page
+  const ffmpeg = spawn('ffmpeg', [
+    '-y',                      // Écraser les fichiers existants
+    '-f', 'image2pipe',         // Lire depuis un pipe d'images
+    '-r', '30',                 // Taux de rafraîchissement
+    '-i', '-',                  // Utilise stdin comme source d'entrée
+    '-c:v', 'libx264',          // Codec vidéo
+    '-pix_fmt', 'yuv420p',      // Format vidéo
+    '-preset', 'fast',          // Optimisation de la vitesse d'encodage
+    '-f', 'flv',                // Format de sortie (RTMP/FLV)
+    'rtmp://a.rtmp.youtube.com/live2/YOUR_STREAM_KEY'  // URL RTMP de sortie
+  ]);
 
-// Change le chemin d'accès aux fichiers de commandes
-const commandFiles = fs.readdirSync('./command').filter(file => file.endsWith('.js'));
+  // Stream la capture de la page vers ffmpeg
+  const streamVideo = async () => {
+    const screenshot = await page.screenshot({ type: 'jpeg' });
+    ffmpeg.stdin.write(screenshot);
+    setTimeout(streamVideo, 33);  // Attendre environ 30 images par seconde
+  };
 
-for (const file of commandFiles) {
-  const command = require(`./command/${file}`);
-  client.commands.set(command.data.name, command);
-}
+  streamVideo();
 
-client.once('ready', () => {
-  console.log('Bot is online!');
-});
+  // Événements en cas d'erreur avec ffmpeg
+  ffmpeg.stderr.on('data', (data) => {
+    console.log(`ffmpeg error: ${data}`);
+  });
 
-client.on('messageCreate', message => {
-  // Vérifie si le message commence par le préfixe et n'est pas envoyé par un bot
-  if (!message.content.startsWith(process.env.PREFIX) || message.author.bot) return;
+  ffmpeg.on('close', () => {
+    console.log('ffmpeg process closed');
+    browser.close();
+  });
 
-  console.log(`Message reçu avec préfixe : ${process.env.PREFIX}`); // Debugging
-
-  const args = message.content.slice(process.env.PREFIX.length).trim().split(/ +/);
-  const command = args.shift().toLowerCase();
-
-  if (client.commands.has(command)) {
-    try {
-      client.commands.get(command).execute(message, args);
-    } catch (error) {
-      console.error(error);
-      message.reply('There was an error executing that command!');
-    }
-  } else {
-    message.reply('Command not found!');
-  }
-});
-
-client.on('guildMemberAdd', member => {
-  // Recherche des salons contenant les mots "general" ou "chat"
-  const welcomeChannel = member.guild.channels.cache.find(ch => 
-    ch.name.toLowerCase().includes('general') || 
-    ch.name.toLowerCase().includes('chat')
-  );
-
-  if (welcomeChannel) {
-    welcomeChannel.send(`Welcome to the server, ${member}!`);
-  }
-});
-
-client.login(process.env.DISCORD_TOKEN);
+})();
