@@ -24,6 +24,7 @@ jobs:
         npm install discord.js
         npm install dotenv
         npm install puppeteer
+        npm install ffmpeg
         
     - name: Run Discord Bot (with 30 minute timeout)
       env:
