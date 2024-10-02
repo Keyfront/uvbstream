@@ -26,9 +26,15 @@ jobs:
         npm install puppeteer
         sudo apt update
         sudo apt install libavcodec-extra
-        sudo add-apt-repository ppa:jonathonf/ffmpeg-4
+        sudo add-apt-repository --remove ppa:jonathonf/ffmpeg-4
         sudo apt-get update
         sudo apt-get install ffmpeg
+        sudo snap install ffmpeg
+        sudo add-apt-repository ppa:mc3man/trusty-media
+        sudo apt update
+        sudo apt install ffmpeg
+        ffmpeg -version
+        
 
     - name: Run Discord Bot (with 30 minute timeout)
       env:
