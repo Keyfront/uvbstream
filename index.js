@@ -9,7 +9,7 @@ const { spawn } = require('child_process');
   
   const page = await browser.newPage();
   
-  // Définir la résolution de capture (par exemple 1920x1080)
+  // Définir la résolution de capture
   await page.setViewport({ width: 1920, height: 1080 });
   
   // Charger la page web que tu veux streamer
@@ -28,28 +28,45 @@ const { spawn } = require('child_process');
     '-maxrate', '5000k',
     '-bufsize', '6000k',
     '-pix_fmt', 'yuv420p',
-    '-g', '50',
+    '-g', '60', // GOP de 2 secondes pour 30fps
     '-f', 'flv',
     'rtmp://a.rtmp.youtube.com/live2/sz87-dusv-psay-wsra-5xms'  // Utiliser la clé RTMP depuis les secrets GitHub
-]);
+  ]);
 
   // Stream la capture de la page vers ffmpeg
   const streamVideo = async () => {
-    const screenshot = await page.screenshot({ type: 'jpeg' });
-    ffmpeg.stdin.write(screenshot);
-    setTimeout(streamVideo, 33);  // Attendre environ 30 images par seconde
+    try {
+      const screenshot = await page.screenshot({ type: 'jpeg' });
+      ffmpeg.stdin.write(screenshot);
+    } catch (error) {
+      console.error('Erreur lors de la capture d\'écran:', error);
+    }
   };
 
-  streamVideo();
+  // Capture les images toutes les 33ms (~30 fps)
+  setInterval(streamVideo, 33);
 
   // Événements en cas d'erreur avec ffmpeg
   ffmpeg.stderr.on('data', (data) => {
-    console.log(`ffmpeg error: ${data}`);
+    console.error(`ffmpeg error: ${data}`);
   });
 
   ffmpeg.on('close', () => {
     console.log('ffmpeg process closed');
     browser.close();
+  });
+
+  // Gérer les erreurs de Puppeteer
+  process.on('unhandledRejection', (error) => {
+    console.error('Unhandled Rejection:', error);
+    browser.close();
+  });
+
+  // Fermer le navigateur en cas d'interruption
+  process.on('SIGINT', async () => {
+    console.log('Fermeture du navigateur...');
+    await browser.close();
+    process.exit();
   });
 
 })();
