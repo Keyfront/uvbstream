@@ -25,7 +25,7 @@ const { spawn } = require('child_process');
   '-pix_fmt', 'yuv420p',
   '-preset', 'fast',
   '-f', 'flv',
-  `rtmp://a.rtmp.youtube.com/live2/${process.env.YOUTUBE_STREAM_KEY}`  // Utiliser la clé RTMP depuis les secrets GitHub
+  `rtmp://a.rtmp.youtube.com/live2/sz87-dusv-psay-wsra-5xms`  // Utiliser la clé RTMP depuis les secrets GitHub
 ]);
 
   // Stream la capture de la page vers ffmpeg
